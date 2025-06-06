@@ -29,10 +29,10 @@
   <p>Wasting your valuable mobile data is easier than ever before.</p>
 
   <input type="number" id="mbInput" placeholder="Enter MB to waste (0 = infinite)" />
-  <br />
+  <br/>
   <button onclick="startWasting()">Start</button>
 
-  <div id="status">0 MB wasted (0 Mbps)</div>
+  <div id="status">0 Megabytes wasted (0 Mbps)</div>
   <p><a href="privacy.html">Privacy Policy</a></p>
 
   <script>
@@ -42,25 +42,30 @@
       wasted = 0;
       startTime = Date.now();
       interval = setInterval(() => {
-        fetch("https://via.placeholder.com/1000.jpg?" + Math.random(), { cache: "no-store" })
+        fetch("https://via.placeholder.com/1000.jpg?" + Math.random())
           .then(() => {
-            wasted += 0.1; // approx 100KB per image
+            wasted += 0.07; // Adjust as needed
             const seconds = (Date.now() - startTime) / 1000;
             speed = wasted / seconds;
             document.getElementById("status").innerText =
-              `${wasted.toFixed(1)} MB wasted (${speed.toFixed(2)} Mbps)`;
+              `${wasted.toFixed(1)} Megabytes wasted (${speed.toFixed(2)} Mbps)`;
             if (mbLimit !== 0 && wasted >= mbLimit) clearInterval(interval);
           });
-      }, 70); // ⏱️ 70 milliseconds per request
+      }, 100);
     }
 
     function startWasting() {
       const mbLimit = parseFloat(document.getElementById('mbInput').value);
+      if (isNaN(mbLimit) || mbLimit < 0) {
+        alert("Please enter a valid number.");
+        return;
+      }
+
       if (confirm("Support developer by clicking an ad and waiting 10 seconds.\nClick OK to continue.")) {
         document.getElementById("status").innerText = "Please wait 10 seconds...";
         setTimeout(() => {
           startWastingAfterDelay(mbLimit);
-        }, 10000); // 10 seconds wait
+        }, 10000);
       }
     }
   </script>
