@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Data Waster</title>
   <style>
     body {
@@ -32,47 +32,36 @@
   <br />
   <button onclick="startWasting()">Start</button>
 
-  <div id="status">0 Megabytes wasted (0 Mbps)</div>
+  <div id="status">0 MB wasted (0 Mbps)</div>
   <p><a href="privacy.html">Privacy Policy</a></p>
 
   <script>
-    let wasted = 0;
-    let speed = 0;
-    let interval;
-    let startTime;
-
-    function startWasting() {
-      const mbLimit = parseFloat(document.getElementById("mbInput").value);
-
-      if (confirm("Support developer by clicking an ad and waiting 10 seconds.\nClick OK to continue.")) {
-        document.getElementById("status").innerText = "⏳ Please wait 10 seconds...";
-
-        setTimeout(() => {
-          startWastingAfterDelay(mbLimit);
-        }, 10000); // 10-second delay
-      }
-    }
+    let wasted = 0, speed = 0, interval, startTime;
 
     function startWastingAfterDelay(mbLimit) {
       wasted = 0;
       startTime = Date.now();
-
       interval = setInterval(() => {
-        fetch("https://via.placeholder.com/1000.jpg?" + Math.random())
+        fetch("https://via.placeholder.com/1000.jpg?" + Math.random(), { cache: "no-store" })
           .then(() => {
-            wasted += 0.1;
-            const elapsed = (Date.now() - startTime) / 1000;
-            speed = wasted / elapsed;
-
+            wasted += 0.1; // approx 100KB per image
+            const seconds = (Date.now() - startTime) / 1000;
+            speed = wasted / seconds;
             document.getElementById("status").innerText =
-              `${wasted.toFixed(1)} Megabytes wasted (${speed.toFixed(2)} Mbps)`;
-
-            if (mbLimit !== 0 && wasted >= mbLimit) {
-              clearInterval(interval);
-              document.getElementById("status").innerText += " ✅ Done!";
-            }
+              `${wasted.toFixed(1)} MB wasted (${speed.toFixed(2)} Mbps)`;
+            if (mbLimit !== 0 && wasted >= mbLimit) clearInterval(interval);
           });
-      }, 100);
+      }, 70); // ⏱️ 70 milliseconds per request
+    }
+
+    function startWasting() {
+      const mbLimit = parseFloat(document.getElementById('mbInput').value);
+      if (confirm("Support developer by clicking an ad and waiting 10 seconds.\nClick OK to continue.")) {
+        document.getElementById("status").innerText = "Please wait 10 seconds...";
+        setTimeout(() => {
+          startWastingAfterDelay(mbLimit);
+        }, 10000); // 10 seconds wait
+      }
     }
   </script>
 </body>
