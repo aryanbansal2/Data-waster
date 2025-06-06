@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Waster</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 80%;
+      font-size: 16px;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Data Waster</h1>
+  <p>Wasting your valuable mobile data is easier than ever before.</p>
+
+  <input type="number" id="mbInput" placeholder="Enter MB to waste (0 = infinite)" />
+  <br />
+  <button onclick="startWasting()">Start</button>
+
+  <div id="status">0 Megabytes wasted (0 Mbps)</div>
+  <p><a href="privacy.html">Privacy Policy</a></p>
+
+  <script>
+    let wasted = 0;
+    let speed = 0;
+    let interval;
+    let startTime;
+
+    function startWasting() {
+      const mbLimit = parseFloat(document.getElementById("mbInput").value);
+
+      if (confirm("Support developer by clicking an ad and waiting 10 seconds.\nClick OK to continue.")) {
+        document.getElementById("status").innerText = "⏳ Please wait 10 seconds...";
+
+        setTimeout(() => {
+          startWastingAfterDelay(mbLimit);
+        }, 10000); // 10-second delay
+      }
+    }
+
+    function startWastingAfterDelay(mbLimit) {
+      wasted = 0;
+      startTime = Date.now();
+
+      interval = setInterval(() => {
+        fetch("https://via.placeholder.com/1000.jpg?" + Math.random())
+          .then(() => {
+            wasted += 0.1;
+            const elapsed = (Date.now() - startTime) / 1000;
+            speed = wasted / elapsed;
+
+            document.getElementById("status").innerText =
+              `${wasted.toFixed(1)} Megabytes wasted (${speed.toFixed(2)} Mbps)`;
+
+            if (mbLimit !== 0 && wasted >= mbLimit) {
+              clearInterval(interval);
+              document.getElementById("status").innerText += " ✅ Done!";
+            }
+          });
+      }, 100);
+    }
+  </script>
+</body>
+</html>
